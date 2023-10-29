@@ -1,34 +1,30 @@
 #!/usr/bin/python3
-'''
-    flask with general routes
-    routes:
-        /status:    display "status":"OK"
-        /stats:     dispaly total for all classes
-'''
-from api.v1.views import app_views
+"""This module implement a rule that returns the status of the application"""
 from flask import jsonify
-from models import storage
+import models
+from api.v1.views import app_views
+from models.amenity import Amenity
+from models.city import City
+from models.place import Place
+from models.review import Review
+from models.state import State
+from models.user import User
 
 
-@app_views.route("/status")
-def status():
-    '''
-        return JSON of OK status
-    '''
-    return jsonify({'status': 'OK'})
+@app_views.route("/status", strict_slashes=False)
+def view_status():
+    """View function that return a json message"""
+    return jsonify({"status": "OK"})
 
 
-@app_views.route("/stats")
-def storage_counts():
-    '''
-        return counts of all classes in storage
-    '''
-    cls_counts = {
-        "amenities": storage.count("Amenity"),
-        "cities": storage.count("City"),
-        "places": storage.count("Place"),
-        "reviews": storage.count("Review"),
-        "states": storage.count("State"),
-        "users": storage.count("User")
-    }
-    return jsonify(cls_counts)
+@app_views.route("/stats", strict_slashes=False)
+def view_stats():
+    """Veiw function that retrieves the number of each object by type"""
+    return jsonify({
+        "amenities": models.storage.count(Amenity),
+        "cities": models.storage.count(City),
+        "places": models.storage.count(Place),
+        "reviews": models.storage.count(Review),
+        "states": models.storage.count(State),
+        "users": models.storage.count(User)
+    })
